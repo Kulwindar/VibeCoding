@@ -498,22 +498,14 @@ All endpoints require `Authorization: Bearer <accessToken>` unless marked public
 
 ---
 
-## 6. KPIs (Success Metrics & Acceptance Criteria)
+## 6. Success Metrics & Acceptance Criteria
 
-> Detailed KPI framework with leading indicators, guardrails, and phase targets is maintained in `kpi-etems.md`.
+> KPI definitions, formulas, guardrail metrics, leading indicators, and phase-by-phase targets are maintained exclusively in → **`kpi.md`**.
+> Phase deliverable checklists and go/no-go gate criteria are maintained in → **`project_scope.md` §7–9**.
 
-### 6.1 Product Success Metrics
+### 6.1 Acceptance Criteria by Module
 
-| Metric | Target | Phase |
-|---|---|---|
-| Employee adoption (MAU ÷ eligible users) | ≥ 90% | Phase 2 |
-| Expense report cycle time (submit → paid, median) | < 5 business days | Phase 1 |
-| Approver SLA compliance (actioned within 48h) | ≥ 85% | Phase 1 |
-| Policy violation rate (flagged items ÷ total items) | ≤ 10% | Phase 2 |
-| Finance reconciliation time reduction vs. baseline | ≥ 50% | Phase 2 |
-| App Store / Play Store rating | ≥ 4.5 | Phase 2 |
-
-### 6.2 Acceptance Criteria by Module
+These acceptance criteria define testable pass/fail conditions for each module. For metric targets, see `kpi.md`.
 
 **Trip Request**
 - AC-TR-01: A submitted trip request triggers approver notification within 30 seconds.
@@ -566,3 +558,15 @@ All endpoints require `Authorization: Bearer <accessToken>` unless marked public
 ### 7.4 Compliance Scope
 - GDPR compliance covers EU employee data only in v1; additional regional compliance frameworks (CCPA, PDPA) are post-launch.
 - Audit log retention is 7 years per policy; actual purge jobs are the responsibility of the Super Admin per their organization's data retention policy.
+
+---
+
+## Document Cross-References
+
+| Topic | Authoritative Source |
+|---|---|
+| KPI definitions, targets, guardrails, formulas | → `kpi.md` |
+| Phase deliverables, in/out-of-scope checklist, exit gates | → `project_scope.md` |
+| AI collaboration rules, tech stack, team structure, folder layout, risks | → `project_boundary.md` |
+| Developer engineering standards | → `Personas/` (engineer personas) |
+| User role needs & goals | → `Personas/` (user personas) |

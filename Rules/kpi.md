@@ -2,10 +2,16 @@
 ## Enterprise Employee Travel & Expense Management System (ETEMS)
 
 **Version:** 2.0
-**Status:** Draft
+**Status:** Active
 **Owner:** Product Management
 **Last Updated:** 2025-06-09
-**Reference:** `prd-etems.md` v2.0
+**Reference:** `prd.md` v2.0
+
+> **Scope of this document:** KPI definitions, formulas, guardrail metrics, leading indicators, phase-by-phase activation targets, data sources, ownership, and review cadence.
+> This is the **single source of truth** for all success metrics.
+>
+> For **functional requirements that drive these metrics** → see `prd.md`
+> For **phase deliverables and go/no-go gates** → see `project_scope.md §4`
 
 ---
 
@@ -191,3 +197,15 @@ Hard limits — breaching any guardrail triggers immediate escalation regardless
 | Monthly | Product + Finance | All active KPIs for current phase |
 | Quarterly | Leadership | North Star trend, pillar health, phase target review |
 | Post-phase launch | All stakeholders | Full baseline reset; targets updated for next phase |
+
+---
+
+## Document Cross-References
+
+| Topic | Authoritative Source |
+|---|---|
+| Functional requirements that drive KPIs | → `prd.md §2.4` |
+| Phase deliverable checklists | → `project_scope.md §3–6` |
+| Phase go/no-go gates | → `project_scope.md §4.2` |
+| Acceptance criteria (AC-*) | → `prd.md §6.1` |
+| Tech stack & team structure | → `project_boundary.md` |
