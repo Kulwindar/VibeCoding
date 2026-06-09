@@ -1,579 +1,568 @@
 # Product Requirements Document
-
 ## Enterprise Employee Travel & Expense Management System (ETEMS)
 
-**PRD Version:** 1.0
-**Project Code:** ETEMS-2025
-**Target Release:** Q3 2025 (Phase 1 Go-Live)
-**Status:** Draft for Review
-**Prepared by:** Senior Product Manager & System Architect
-**Organisation:** Large Enterprise (10,000+ Employees, Multi-Location)
-**Confidentiality:** Internal — Restricted
+**Version:** 2.0
+**Status:** Draft
+**Author:** Product Management
+**Last Updated:** 2025-06-09
 
 ---
 
-## Table of Contents
+## 1. Problem Statement
 
-1. [Document Control](#1-document-control)
-2. [Executive Summary](#2-executive-summary)
-3. [Stakeholders & User Personas](#3-stakeholders--user-personas)
-4. [Functional Requirements](#4-functional-requirements)
-5. [Non-Functional Requirements](#5-non-functional-requirements)
-6. [Integration Requirements](#6-integration-requirements)
-7. [System Architecture Overview](#7-system-architecture-overview)
-8. [Key User Stories & Acceptance Criteria](#8-key-user-stories--acceptance-criteria)
-9. [Release Plan & Feature Phasing](#9-release-plan--feature-phasing)
-10. [KPI Alignment & Success Metrics](#10-kpi-alignment--success-metrics)
-11. [Risks & Mitigations](#11-risks--mitigations)
-12. [Assumptions & Dependencies](#12-assumptions--dependencies)
-13. [Glossary](#13-glossary)
-14. [Appendices](#14-appendices)
+### 1.1 Background
+Enterprise employees travel and incur business expenses regularly. Today, most organizations handle this through a fragmented mix of email, spreadsheets, and paper receipts — with no unified system connecting booking, submission, approval, and reimbursement.
 
----
+### 1.2 Pain Points
 
-## 1. Document Control
+| Who | Pain Point |
+|---|---|
+| **Employee** | Manual receipt tracking, no visibility on reimbursement status, policy rules unclear at time of spending |
+| **Manager** | Approval requests arrive via email with no context, no consolidated view of team spend |
+| **Finance** | 60%+ of reconciliation time is manual, policy violations discovered after the fact, no real-time spend visibility |
+| **Organization** | No consolidated analytics, no policy enforcement at point of booking, compliance risk from unaudited spend |
 
-### 1.1 Version History
+### 1.3 Problem in One Line
+Enterprises lack a unified system to manage the full T&E lifecycle — from trip request to reimbursement — resulting in slow processing, policy violations, and manual financial overhead.
 
-| Version | Date      | Author              | Changes                              |
-|---------|-----------|---------------------|--------------------------------------|
-| 1.0     | June 2025 | Senior PM & Architect | Initial draft for stakeholder review |
-| 1.1     | TBD       | TBD                 | Incorporate stakeholder feedback     |
-| 2.0     | TBD       | TBD                 | Finalised baseline for development   |
+### 1.4 Goals
+- Reduce expense report cycle time from days to hours
+- Enforce travel policies at the point of booking, not after the fact
+- Give Finance real-time visibility into committed and actual spend
+- Achieve ≥ 90% employee adoption within 6 months of launch
 
-### 1.2 Stakeholder Sign-off
-
-| Role                  | Name | Sign-off Status | Date |
-|-----------------------|------|-----------------|------|
-| Chief Financial Officer | TBD | Pending |  |
-| Chief HR Officer      | TBD  | Pending |  |
-| Chief Technology Officer | TBD | Pending |  |
-| Head of Compliance    | TBD  | Pending |  |
-| PMO Lead              | TBD  | Pending |  |
-
-### 1.3 Document Scope
-
-This PRD defines all functional, non-functional, integration, security, and compliance requirements for the Enterprise Employee Travel & Expense Management System (ETEMS). It serves as the authoritative contract between business stakeholders, product management, and the engineering team throughout the design, build, and deployment lifecycle.
+### 1.5 Non-Goals
+- Payroll processing or salary disbursement
+- ERP replacement (ETEMS integrates with existing ERP systems)
+- Direct flight or hotel booking engine (integrates with TMC APIs)
 
 ---
 
-## 2. Executive Summary
+## 2. Solution Overview
 
-### 2.1 Problem Statement
+### 2.1 What We Are Building
+ETEMS is a cross-platform (web + mobile) system that manages the full lifecycle of employee travel and expense — trip request, policy validation, expense submission, multi-level approval, and reimbursement — in a single unified platform.
 
-The organisation currently manages travel requests, approvals, expense claims, and reimbursements through a combination of emails, Excel spreadsheets, phone calls, and paper documents for a workforce of 10,000+ employees across multiple locations. This approach creates systemic operational challenges:
+### 2.2 Users & Roles
 
-- Approval cycle times of 3–5 days for travel requests and 7–14 days for expense claims.
-- Reimbursement delays of 15–30 days causing employee dissatisfaction.
-- Zero automated duplicate detection, enabling financial leakage.
-- No centralised audit trail, creating compliance and statutory risk.
-- Manual processing cost estimated at ₹800–₹1,200 per expense report.
-- No real-time spend visibility for finance or management.
-- Receipt loss rates of approximately 45%, undermining policy enforcement.
+| Role | Description |
+|---|---|
+| **Employee (Traveler)** | Submits trip requests, uploads receipts, tracks reimbursement |
+| **Manager (Approver)** | Reviews and approves/rejects trip requests and expense reports |
+| **Finance Admin** | Configures policies, manages reimbursements, views analytics |
+| **HR Admin** | Manages employee hierarchy and delegation rules |
+| **Super Admin** | System configuration, integrations, audit access |
 
-### 2.2 Proposed Solution
+### 2.3 Module Overview
 
-ETEMS is a centralised, cloud-based digital platform that automates end-to-end travel and expense workflows — from travel request initiation and multi-level approval to expense submission, policy enforcement, reimbursement, and management reporting. The system will serve all 10,000+ employees via web and mobile interfaces, with deep integration into the organisation's ERP and payroll systems.
+```
+ETEMS
+├── Trip Request & Booking
+├── Expense Submission
+├── Approval Workflow
+├── Policy Engine
+├── Reimbursement & Accounting
+├── Analytics & Reporting
+└── Admin & Configuration
+```
 
-### 2.3 Strategic Objectives
+### 2.4 Functional Requirements
 
-- Reduce travel request approval time from 3–5 days to under 24 hours.
-- Achieve ≥ 80% straight-through processing (automated, no manual touch) of expense claims within 12 months.
-- Deliver ≥ 200% ROI within 24 months of go-live.
-- Reduce per-report processing cost by 60% vs the manual baseline.
-- Achieve 100% digital audit trail and receipt compliance.
-- Enable real-time management reporting on T&E spend with zero reporting lag.
+#### Trip Request & Booking
+**FR-TR-01** Employee creates a trip request with destination, dates, purpose, and estimated budget.
+**FR-TR-02** System validates the request against the active travel policy before submission.
+**FR-TR-03** Employee can attach pre-booked tickets/hotel confirmations or request TMC booking assistance.
+**FR-TR-04** Trip request displays estimated cost breakdown: flight, hotel, per diem, miscellaneous.
+**FR-TR-05** Employee receives in-app and email notification on approval or rejection with approver comments.
+**FR-TR-06** Approved trips auto-create an expense report shell pre-populated with trip details.
 
-### 2.4 Project Scope
+#### Expense Submission
+**FR-EX-01** Employee adds line items to a trip expense report or creates a standalone non-travel report.
+**FR-EX-02** Each line item requires: category, amount, currency, date, merchant, and receipt attachment.
+**FR-EX-03** Mobile app supports receipt capture via camera with OCR auto-fill for amount, date, and merchant.
+**FR-EX-04** System flags line items that violate policy (over limit, missing receipt, disallowed category) with a reason.
+**FR-EX-05** Employee can submit partially flagged reports; flagged items are routed for additional review.
+**FR-EX-06** Multi-currency: employee enters in local currency; system converts to base currency using daily exchange rate.
+**FR-EX-07** Per diem is auto-calculated based on destination and trip duration from the approved trip request.
+**FR-EX-08** Employee can save a draft and return to complete it later.
 
-**In Scope:**
-Travel request and approval workflows; expense claim submission (web + mobile); policy enforcement engine; multi-level approval workflows; advance management; ERP/payroll integration; OCR receipt capture; management dashboards; compliance audit trail; GST/tax categorisation; preferred vendor tracking; carbon emission reporting.
+#### Approval Workflow
+**FR-AP-01** Approval chain is driven by org hierarchy (Manager → Dept Head → Finance) based on amount thresholds.
+**FR-AP-02** Approver is notified (in-app, email, push) when a report is pending their action.
+**FR-AP-03** Approver can approve, reject, or send back with comments at line-item or report level.
+**FR-AP-04** Rejected or sent-back reports return to the employee with inline approver comments.
+**FR-AP-05** Auto-escalation triggers if an approver does not act within the configured SLA (default: 48 hours).
+**FR-AP-06** Approvers can delegate authority for a defined date range (e.g., during leave).
+**FR-AP-07** Finance Admin can override and approve/reject any report at any stage with a mandatory audit note.
 
-**Out of Scope (Phase 1):**
-Online travel booking engine; corporate credit card issuing; international tax compliance (beyond GST); HR performance management integration; customer expense billing/chargeback workflows.
+#### Policy Engine
+**FR-PE-01** Finance Admin defines policies per employee grade, department, trip destination, and expense category.
+**FR-PE-02** Policy rules include: max amount per category per day, max total per trip, receipt threshold, allowed/blocked categories.
+**FR-PE-03** Policies enforced at submission (soft-block with warning) and at approval (hard-block if configured).
+**FR-PE-04** Policy versions are maintained with effective dates; changes do not retroactively affect submitted reports.
+**FR-PE-05** Out-of-policy submissions require a mandatory justification note from the employee.
 
----
+#### Reimbursement & Accounting
+**FR-RM-01** Finance Admin marks approved reports as "Processing" and "Paid" with payment reference and date.
+**FR-RM-02** System generates reimbursement batches (CSV/XLSX) compatible with the configured ERP or payroll system.
+**FR-RM-03** Employee is notified when reimbursement is processed and can view payment status in-app.
+**FR-RM-04** Corporate card transactions can be imported (bank feed or CSV) and matched to expense line items.
+**FR-RM-05** Expense categories map to configurable GL codes exported in the accounting file.
 
-## 3. Stakeholders & User Personas
+#### Analytics & Reporting
+**FR-AN-01** Finance dashboard shows: total spend (MTD/QTD/YTD), spend by department/category, top spenders, policy violation rate.
+**FR-AN-02** Manager dashboard shows: pending approvals, team spend summary, reports by stage.
+**FR-AN-03** All reports exportable as CSV or PDF.
+**FR-AN-04** Finance Admin can schedule automated email delivery of summary reports (weekly/monthly).
+**FR-AN-05** Any chart is drillable to the underlying expense line items.
 
-### 3.1 Stakeholder Map
+#### Admin & Configuration
+**FR-AD-01** Super Admin manages org hierarchy via HRMS API sync or CSV import.
+**FR-AD-02** Finance Admin configures expense categories, GL codes, cost centers, and base currency.
+**FR-AD-03** Super Admin configures all integrations (HRMS, ERP, TMC, bank feed).
+**FR-AD-04** Full audit log: every report state change is logged with actor, timestamp, and IP.
+**FR-AD-05** A user can hold multiple roles; role assignment is managed per user.
 
-| Stakeholder       | Role                     | Primary Interest                           | Influence       |
-|-------------------|--------------------------|---------------------------------------------|-----------------|
-| CFO               | Executive Sponsor        | Cost control, ROI, financial compliance     | High            |
-| CHRO              | Business Sponsor         | Employee experience, adoption, policy       | High            |
-| CTO / IT Head     | Technical Sponsor        | Architecture, security, integrations        | High            |
-| Finance Head      | Primary User Group Owner | Accuracy, speed, reporting                  | High            |
-| HR Head           | Change Management Lead   | Adoption, training, satisfaction            | Medium          |
-| Internal Audit    | Compliance Oversight     | Audit trail, policy enforcement             | Medium          |
-| Procurement Head  | Vendor Management        | Preferred vendor adherence                  | Medium          |
-| Line Managers     | Approver Group           | Fast approvals, visibility into team spend  | Medium          |
-| Employees (all)   | End Users                | Easy submission, fast reimbursement         | High (volume)   |
-| IT / Infra Team   | Implementation Partner   | Uptime, integration, security               | High            |
-| ERP Vendor        | Integration Partner      | Stable API contracts                        | Low             |
+### 2.5 Non-Functional Requirements
 
-### 3.2 User Personas
+| Category | Requirement |
+|---|---|
+| **Performance** | API p99 < 300ms; report list load < 1.5s |
+| **Availability** | 99.9% uptime (monthly SLA) |
+| **Scalability** | Up to 50,000 concurrent users |
+| **Security** | JWT auth with refresh rotation; RBAC; AES-256 at rest; TLS 1.3 in transit |
+| **Compliance** | GDPR-compliant; audit log retained 7 years |
+| **Offline (Mobile)** | Receipt capture and draft saving work offline; sync on reconnect |
+| **Accessibility** | WCAG 2.1 AA on web |
+| **Localization** | Multi-currency, date format, and timezone from day 1 |
 
-#### Persona 1 — Priya (The Travelling Employee)
+### 2.6 Screens & Pages
 
-Priya is a Senior Sales Manager based in Mumbai, travelling 8–10 days per month for client meetings. She books her own travel, collects receipts, and submits expense claims after each trip. Currently she spends 45–60 minutes per report filling Excel sheets, attaching scanned receipts, and chasing approvals over WhatsApp. She expects the new system to be fast, mobile-first, and to deliver her reimbursement within a week.
+**Web**
 
-#### Persona 2 — Ramesh (The Finance Reviewer)
+| Screen | Role |
+|---|---|
+| Dashboard | Employee, Manager, Finance |
+| Trip Request Form | Employee |
+| Expense Report (create/edit) | Employee |
+| Expense Report Detail (review) | Manager, Finance |
+| Approval Queue | Manager, Finance |
+| Analytics Dashboard | Finance |
+| Policy Configuration | Finance Admin |
+| Organization & User Management | Super Admin |
+| Audit Log | Super Admin |
 
-Ramesh is an Accounts Executive in the Finance department, manually verifying 200+ expense claims per month — checking receipts, policy limits, and ledger codes before processing payroll entries. He currently spends 40% of his working week on T&E activities. He needs automated policy checks, ERP reconciliation, and a dashboard to manage his workload.
+**Mobile**
 
-#### Persona 3 — Shalini (The Line Manager / Approver)
+| Screen | Role |
+|---|---|
+| Home / My Reports | Employee |
+| New Expense (receipt capture) | Employee |
+| Trip Request | Employee |
+| Approval Queue | Manager |
+| Notification Center | All |
+| Profile & Settings | All |
 
-Shalini manages a team of 15 and approves 25–30 travel requests and expense reports monthly. She currently approves via email, often losing track of pending items. She needs a quick mobile approval interface with adequate context (purpose, budget impact, policy status) to make informed decisions in under 2 minutes.
+### 2.7 Notifications
 
-#### Persona 4 — Vikram (The Finance Controller)
+| Event | In-App | Email | Push |
+|---|---|---|---|
+| Trip request submitted | ✅ Approver | ✅ Approver | ✅ Approver |
+| Trip approved / rejected | ✅ Employee | ✅ Employee | ✅ Employee |
+| Expense report submitted | ✅ Approver | ✅ Approver | ✅ Approver |
+| Expense approved / rejected | ✅ Employee | ✅ Employee | ✅ Employee |
+| Approval SLA breached | ✅ Manager | ✅ Manager | — |
+| Reimbursement processed | ✅ Employee | ✅ Employee | ✅ Employee |
+| Policy violation flagged | ✅ Employee | — | — |
 
-Vikram is the Head of Finance, responsible for T&E budget control across all business units. He currently receives manual consolidated reports with a 5–7 day lag. He needs a real-time dashboard showing spend vs budget, out-of-policy trends, and department-level analytics.
+### 2.8 Milestones & Phasing
 
-#### Persona 5 — Ananya (The Compliance Officer)
+**Phase 1 — MVP (Month 1–3)**
+- Trip request, expense submission, receipt upload (web + mobile)
+- 2-level approval workflow (Manager → Finance)
+- Basic policy engine (category limits, receipt threshold)
+- Reimbursement tracking and CSV export
+- Email notifications
 
-Ananya manages internal audit and compliance, responsible for ensuring T&E activities meet the organisation's policy, GST regulations, and statutory requirements. She needs a complete, tamper-proof audit trail, anomaly detection alerts, and on-demand audit-ready reports.
+**Phase 2 — Core Enterprise (Month 4–6)**
+- OCR receipt auto-fill (mobile)
+- Multi-level dynamic approval chains
+- Advanced policy engine (per grade, per destination)
+- HRMS sync, analytics dashboard, per diem auto-calculation
+- Delegation and auto-escalation
 
----
-
-## 4. Functional Requirements
-
-### Module 1: Travel Request Management
-
-#### FR-1.1 Travel Request Submission
-
-- Employees must be able to submit a travel request via web or mobile application.
-- Mandatory fields: purpose of travel, destination(s), travel dates, estimated cost (per category), cost centre, project code, and supporting documents.
-- The system must support domestic and international travel request types.
-- Employees must be able to attach supporting documents (invitation letters, event details, approvals from clients) to the request.
-- The system must auto-populate the employee's reporting manager and cost centre from the HRMS integration.
-- Employees must be able to save a draft request and return to complete it later.
-
-#### FR-1.2 Travel Request Approval Workflow
-
-- The system must support configurable multi-level approval workflows (L1 = Line Manager, L2 = Department Head, L3 = Finance for high-value requests).
-- Approval thresholds must be configurable by cost centre, travel type, and amount.
-- Approvers must receive real-time push notifications (email + mobile app) on pending requests.
-- Approvers must be able to approve, reject, or return for clarification with a mandatory comment.
-- The system must auto-escalate pending approvals to the next level if the SLA (configurable, default 24 hours) is not met.
-- Delegation of approval authority must be supported for leave periods.
-
-#### FR-1.3 Travel Advance Management
-
-- Employees must be able to request a travel advance linked to an approved travel request.
-- Advance requests must be routed through Finance approval.
-- The system must track advance issuance, outstanding balance, and settlement status.
-- Automated reminders must be sent to employees with unsettled advances beyond the configurable grace period (default 30 days after return date).
-- Finance must be able to set a maximum advance amount per employee grade/level.
-
----
-
-### Module 2: Expense Claim Submission
-
-#### FR-2.1 Expense Report Creation
-
-- Employees must be able to create an expense report and add individual line items.
-- Expense categories must include: flights, trains, hotels, local transport, meals, client entertainment, conference fees, communication, and miscellaneous (configurable by admin).
-- The system must support multiple currencies with automatic conversion to INR using a configurable exchange rate source.
-- Line items must require: date, category, amount, currency, vendor/merchant name, purpose, project code, and cost centre.
-- Employees must be able to link an expense report to an approved travel request or submit standalone claims.
-
-#### FR-2.2 Receipt Capture & OCR
-
-- Employees must be able to photograph receipts directly via the mobile app.
-- The system must use OCR to auto-populate date, merchant name, and amount from scanned receipts.
-- OCR-extracted values must be editable by the employee before submission.
-- The system must support JPG, PNG, and PDF receipt formats.
-- The system must warn the employee if a submitted expense lacks a receipt (for claims above the configurable no-receipt threshold, default ₹500).
-
-#### FR-2.3 Policy Validation Engine
-
-- The system must automatically validate each expense line item against the configured policy matrix at the time of submission.
-- Policy rules must include: per-diem limits by city/grade, category spending caps, non-reimbursable categories, receipt thresholds, and advance utilisation rules.
-- Policy violations must be flagged with a clear reason and allow the employee to either correct the entry or submit with a justification (configurable per violation type).
-- The system must detect duplicate claims (same date, same vendor, same amount within the last 90 days) and block submission with an alert.
-- Admins must be able to update policy rules via the admin console without a code release.
-
-#### FR-2.4 Expense Claim Approval Workflow
-
-- Approved expense claims must follow a configurable approval chain (Line Manager → Finance Reviewer → Finance Controller for high-value claims).
-- Approvers must see the full expense report with policy violation flags, receipt thumbnails, and budget impact before acting.
-- Finance Reviewers must be able to approve, reject, partially approve, or query individual line items.
-- Rejected or queried claims must be returned to the employee with mandatory comments.
-- Approved claims must be automatically queued for payroll/reimbursement processing.
-
----
-
-### Module 3: Reimbursement Processing
-
-#### FR-3.1 Reimbursement Workflow
-
-- Approved expense claims must be automatically queued for reimbursement processing without manual re-entry.
-- The system must integrate with the payroll system to process reimbursements in the next payroll cycle or via out-of-cycle bank transfer (Finance-configurable).
-- Employees must receive a notification when their reimbursement is processed, including the amount and expected credit date.
-- Finance must be able to place individual claims on hold pending further review without blocking other claims from the same employee.
-
-#### FR-3.2 Advance Settlement
-
-- When a reimbursement is processed for a trip that had an advance, the system must automatically net off the advance balance.
-- If actual expenses are less than the advance, the system must generate a recovery request for the surplus amount.
-- If actual expenses exceed the advance, the system must calculate the net payable to the employee.
+**Phase 3 — Integrations & Scale (Month 7–9)**
+- ERP integration (GL export, reimbursement batch)
+- TMC API integration, corporate card reconciliation
+- Audit log UI, scheduled report emails
+- Multi-tenant / multi-entity support
 
 ---
 
-### Module 4: Administration & Policy Configuration
+## 3. User Flows
 
-#### FR-4.1 Policy Management Console
+### 3.1 Core Flow — Employee Submits Trip & Gets Reimbursed
 
-- Authorised administrators must be able to configure and update T&E policies via a web-based admin console.
-- Configurable parameters must include: per-diem rates by city tier and employee grade, hotel caps, meal limits, category caps, non-reimbursable item list, advance limits, receipt thresholds, and claim submission window.
-- Policy changes must be versioned with an effective date, and historical claims evaluated against the policy in effect at the time of travel.
+```
+Employee                  System                    Manager          Finance
+   │                         │                          │                │
+   │── Create Trip Request ──▶│                          │                │
+   │                         │── Policy Check           │                │
+   │◀── Validation Result ───│                          │                │
+   │── Submit Request ───────▶│── Notify Approver ──────▶│                │
+   │                         │                          │── Review       │
+   │◀── Approved Notif. ─────│◀─────────────────────────│                │
+   │── Upload Receipts        │                          │                │
+   │── Submit Expense Report ▶│── Notify Approver ──────▶│                │
+   │                         │                          │── Approve      │
+   │                         │◀─────────────────────────│                │
+   │                         │── Route to Finance ──────────────────────▶│
+   │                         │                          │                │── Mark Paid
+   │◀── Reimbursement Notif. ─│◀────────────────────────────────────────│
+```
 
-#### FR-4.2 User & Role Management
+### 3.2 Policy Violation Flow
 
-- The system must support role-based access control (RBAC) with the following standard roles: Employee, Line Manager/Approver, Finance Reviewer, Finance Controller, HR Admin, System Admin, Audit/Read-Only.
-- Roles must be assignable per user and must sync from the HRMS integration on a configurable schedule.
-- The system must support delegation of approval authority with a defined delegation period.
+```
+Employee submits line item
+  → System checks against active policy
+  → Violation detected (over limit / missing receipt / blocked category)
+  → Line item flagged with reason code
+  → Employee adds mandatory justification note
+  → Report submitted with flagged items marked
+  → Additional approval step inserted into chain
+  → Finance reviews each flagged item individually
+  → Approved with justification or rejected with comment
+```
 
-#### FR-4.3 Cost Centre & Budget Management
+### 3.3 Approver Delegation Flow
 
-- The system must maintain a cost centre hierarchy synced from the ERP.
-- Budget allocations for each cost centre must be configurable per fiscal period.
-- The system must provide real-time budget utilisation alerts when spend reaches configurable thresholds (e.g., 75%, 90%, 100% of budget).
+```
+Approver sets delegation (date range + delegate user)
+  → System records delegation with effective dates
+  → Report arrives during delegation period
+  → Notification routed to delegate
+  → Delegate approves/rejects — audit log records both delegator and delegate
+  → Delegation expires → approvals route back to original approver
+```
 
----
+### 3.4 Auto-Escalation Flow
 
-### Module 5: Reporting & Analytics
-
-#### FR-5.1 Management Dashboard
-
-- A real-time dashboard must display: total T&E spend vs budget, spend by department/cost centre/category, pending approval queue size, out-of-policy claim volume and value, and top spenders.
-- Finance Controllers and above must have access to the full organisation dashboard.
-- Department Heads must have access to a department-scoped dashboard.
-- All dashboard data must reflect the current state with no more than a 15-minute refresh lag.
-
-#### FR-5.2 Standard Reports
-
-- The system must provide pre-built reports including: Expense Claim Status Report, Policy Violation Report, Advance Settlement Report, Reimbursement Register, Budget Utilisation Report, Vendor Analysis Report, Carbon Emission Report, and Preferred Vendor Utilisation Report.
-- All reports must be exportable to Excel (.xlsx) and PDF formats.
-- Reports must be schedulable for automated email delivery to defined recipients.
-
-#### FR-5.3 Audit & Compliance Reports
-
-- An Audit Trail Report must be available showing every action taken on every transaction (submission, edit, approval, rejection, payment) with timestamp and user identity.
-- The audit trail must be immutable and retained for a minimum of 7 years in line with statutory requirements.
-- The system must generate a GST Input Tax Credit (ITC) Report for Finance and Tax teams.
-
----
-
-## 5. Non-Functional Requirements
-
-### 5.1 Performance
-
-| Requirement           | Specification                                                                         |
-|-----------------------|---------------------------------------------------------------------------------------|
-| Page load time        | < 2 seconds for all core user-facing pages (p95 under normal load)                   |
-| API response time     | < 500 ms for all read operations; < 1 second for write operations (p95)              |
-| Concurrent users      | System must support ≥ 5,000 concurrent active sessions without degradation           |
-| Throughput            | Must process ≥ 1,000 expense claim submissions per hour during peak periods          |
-| Report generation     | Standard reports must generate within 30 seconds for up to 12 months of data         |
-| OCR processing        | Receipt scan results must be returned within 5 seconds of upload                     |
-
-### 5.2 Availability & Reliability
-
-| Requirement              | Specification                                                                    |
-|--------------------------|----------------------------------------------------------------------------------|
-| Uptime SLA               | ≥ 99.5% measured monthly (excludes scheduled maintenance windows)               |
-| Scheduled maintenance    | Maximum 4 hours per month; during off-peak hours only (11 PM – 4 AM IST)        |
-| Disaster recovery RTO    | Recovery Time Objective: ≤ 4 hours for P1 outages                               |
-| Disaster recovery RPO    | Recovery Point Objective: ≤ 1 hour (maximum data loss on catastrophic failure)  |
-| Data backup              | Full daily backups; incremental every 4 hours; retained for 90 days             |
-| Failover                 | Automated failover to standby region with no manual intervention required       |
-
-### 5.3 Scalability
-
-- The architecture must support horizontal scaling to accommodate a 50% growth in user base (up to 15,000 employees) without infrastructure redesign.
-- The database tier must support partitioning/sharding strategies as transaction volumes grow.
-- Storage for receipt images and documents must scale to accommodate 5 years of historical data without performance degradation.
-
-### 5.4 Security
-
-| Requirement                | Specification                                                                                                                        |
-|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
-| Authentication             | MFA mandatory for Finance, Admin, and Approver roles. SSO via SAML 2.0 / OAuth 2.0 with the organisation's identity provider.      |
-| Authorisation              | RBAC. Users can only access data within their organisational scope. No cross-department data visibility without explicit access grants. |
-| Data encryption at rest    | AES-256 encryption for all stored data including receipts, personal details, and financial records.                                  |
-| Data encryption in transit | TLS 1.3 mandatory for all client-server and server-server communication.                                                            |
-| Session management         | Auto-logout after 30 minutes of inactivity. Concurrent session limits per user.                                                     |
-| Penetration testing        | Annual third-party penetration test. Critical findings remediated within 30 days.                                                   |
-| Vulnerability management   | Dependency scanning in CI/CD pipeline. OWASP Top 10 compliance mandatory.                                                           |
-| Audit logging              | All user actions, admin configuration changes, and system events logged with timestamp, user ID, and IP address.                    |
-
-### 5.5 Usability
-
-- The web application must be accessible on Chrome, Firefox, Safari, and Edge (latest 2 versions of each).
-- The mobile application must support iOS 14+ and Android 10+.
-- Core workflows (submit expense claim, approve/reject, check status) must be completable by a new user without training within the first use session.
-- The interface must support English and Hindi as primary languages; additional regional languages may be added in Phase 2.
-- All user-facing forms must provide inline validation with clear, human-readable error messages.
-- The application must meet WCAG 2.1 Level AA accessibility standards.
-
-### 5.6 Compliance & Data Privacy
-
-- The system must comply with India's Digital Personal Data Protection Act (DPDPA) 2023.
-- Employee personal data (bank account details, address, PAN) must be encrypted, access-controlled, and not shared with third parties without consent.
-- GST-related transaction data must be retained for a minimum of 6 years as per GST rules.
-- Financial records must be retained for a minimum of 7 years as per the Companies Act 2013.
-- Data residency: all primary data must be stored in India-based data centres.
+```
+Report submitted → Approver notified
+  → 36 hours: reminder notification sent
+  → 48 hours: no action taken
+  → System auto-escalates to approver's manager
+  → Escalation logged in audit trail
+  → Both approver and escalation target notified
+```
 
 ---
 
-## 6. Integration Requirements
+## 4. API Design
 
-### 6.1 Integration Architecture Overview
+> Full OpenAPI 3.1 spec is maintained in `packages/api-spec/openapi.yaml`. This section defines the contract surface — resource groups, key endpoints, request/response shapes, and auth requirements.
 
-ETEMS must integrate with the following systems via secure, well-documented APIs. All integrations must be designed for resilience with retry logic, dead-letter queues for failed messages, and alerting on integration failures.
+### 4.1 Auth
 
-### 6.2 Integration Specifications
+All endpoints require `Authorization: Bearer <accessToken>` unless marked public.
 
-| System                    | Direction              | Data Exchanged                                                                        | Trigger / Frequency                                   | Priority |
-|---------------------------|------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------|----------|
-| HRMS / People System      | Inbound                | Employee master, reporting hierarchy, cost centres, grades, leave status              | Daily sync + real-time on change                      | Critical |
-| ERP / Finance Ledger      | Bidirectional          | Cost centre budgets (in), approved claims & journal entries (out), vendor master (in) | Real-time for approvals; nightly for reconciliation   | Critical |
-| Payroll System            | Outbound               | Approved reimbursement amounts, employee bank details reference                       | Per payroll run + out-of-cycle on demand              | Critical |
-| Identity Provider (SSO)   | Inbound                | User authentication tokens, session management                                        | Real-time (each login)                                | Critical |
-| Email Server (SMTP)       | Outbound               | Approval notifications, reminders, status updates                                    | Event-driven (real-time)                              | High     |
-| Mobile Push Notification  | Outbound               | Approval requests, status changes, reminders                                          | Event-driven (real-time)                              | High     |
-| Bank / Payment Gateway    | Outbound               | Out-of-cycle reimbursement instructions                                               | On demand (Finance-initiated)                         | Medium   |
-| OCR / AI Receipt Parser   | Outbound & Inbound     | Receipt images (out), parsed field values (in)                                        | On receipt upload (real-time)                         | High     |
-| Carbon Emission API       | Outbound & Inbound     | Trip details (out), emission values in kg CO2 (in)                                   | On travel request approval                            | Low      |
-| Preferred Vendor Directory| Inbound                | Approved vendor list, negotiated rates                                                | Weekly sync                                           | Low      |
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/v1/auth/login` | POST | Email + password → access token + refresh token |
+| `/api/v1/auth/refresh` | POST | Refresh token → new access token |
+| `/api/v1/auth/logout` | POST | Invalidate refresh token |
 
-### 6.3 Integration Standards
-
-- All external integrations must use REST APIs with JSON payloads or SFTP file transfer where REST is not available.
-- API versioning must be maintained. Breaking changes require a minimum 90-day deprecation notice.
-- OAuth 2.0 / API key authentication required for all machine-to-machine integrations.
-- All integration events must be logged in the system audit log with source, payload hash, timestamp, and status.
-- Integration failures must trigger automated alerts to the IT Operations team within 5 minutes.
+**Request — Login**
+```json
+{ "email": "user@company.com", "password": "string" }
+```
+**Response — 200**
+```json
+{
+  "accessToken": "eyJ...",
+  "expiresIn": 900,
+  "user": { "id": "string", "name": "string", "role": ["employee"] }
+}
+```
 
 ---
 
-## 7. System Architecture Overview
+### 4.2 Trip Requests
 
-### 7.1 Architecture Principles
+| Endpoint | Method | Role | Description |
+|---|---|---|---|
+| `/api/v1/trips` | POST | Employee | Create trip request |
+| `/api/v1/trips` | GET | Employee, Manager | List trips (paginated, filterable) |
+| `/api/v1/trips/:tripId` | GET | Employee, Manager, Finance | Get trip detail |
+| `/api/v1/trips/:tripId` | PATCH | Employee | Update draft trip |
+| `/api/v1/trips/:tripId/submit` | POST | Employee | Submit trip for approval |
+| `/api/v1/trips/:tripId/approve` | POST | Manager | Approve trip request |
+| `/api/v1/trips/:tripId/reject` | POST | Manager | Reject trip with comment |
 
-- Cloud-native, multi-tenant SaaS deployment on a leading cloud provider (AWS / Azure / GCP) with primary data residency in India.
-- Microservices-based backend to enable independent scaling of high-load components (OCR service, notification service, approval engine).
-- API-first design: all business logic exposed via versioned REST APIs consumed by web and mobile clients equally.
-- Event-driven architecture for notifications, ERP sync, and audit logging (using a message broker such as Apache Kafka or AWS SQS).
-- Stateless application tier to enable horizontal auto-scaling.
-- CDN-served frontend assets for fast global load times with India PoPs prioritised.
-
-### 7.2 Core Components
-
-| Component                  | Technology Stack (Indicative)                           | Responsibility                                          |
-|----------------------------|---------------------------------------------------------|---------------------------------------------------------|
-| Web Frontend               | React / Next.js                                         | Employee, approver, and admin web interfaces            |
-| Mobile App                 | React Native (iOS + Android)                            | Employee mobile submission and approver mobile          |
-| API Gateway                | AWS API Gateway / Kong                                  | Rate limiting, auth validation, routing                 |
-| Travel Request Service     | Node.js / Java Spring Boot                              | Travel request CRUD, approval state machine             |
-| Expense Management Service | Node.js / Java Spring Boot                              | Claim lifecycle, policy engine, duplicate detection     |
-| OCR / Document Service     | Python + AWS Textract / Google Vision                   | Receipt parsing and image storage                       |
-| Notification Service       | Node.js + Firebase FCM + SMTP relay                     | Email, push notifications, reminders                    |
-| Reporting Service          | Python / Node.js + BI engine                            | Dashboards, report generation, data export              |
-| Integration Service        | Node.js / MuleSoft                                      | ERP, HRMS, payroll integration adapters                 |
-| Audit Log Service          | Append-only store (AWS CloudWatch Logs + S3)            | Immutable transaction and action logging                |
-| Database (Transactional)   | PostgreSQL (primary) + Redis (cache)                    | All transactional data                                  |
-| Object Storage             | AWS S3 / Azure Blob                                     | Receipt images, export files, document attachments      |
-
----
-
-## 8. Key User Stories & Acceptance Criteria
-
-### US-001 — Employee: Expense Submission
-
-> *As an employee, I want to photograph a receipt and have the expense details auto-filled, so that I can submit expense claims in under 10 minutes from my mobile phone.*
-
-**Acceptance Criteria:**
-
-- Given the employee opens the mobile app and taps 'Add Expense', when they capture a receipt photo, then the system returns OCR-parsed date, vendor, and amount within 5 seconds.
-- Given the OCR returns values, when the employee reviews them, then all fields are editable before submission.
-- Given the employee submits a claim, when the claim amount exceeds a policy limit, then the system displays the specific policy rule violated in plain language and offers the option to add a justification note.
-- Given the employee submits a valid claim, when submission is confirmed, then the employee receives an in-app confirmation and email within 60 seconds.
-
-### US-002 — Line Manager: Approval
-
-> *As a line manager, I want to review and approve expense claims from my mobile phone in under 2 minutes, so that my team's reimbursements are not delayed by my travel schedule.*
-
-**Acceptance Criteria:**
-
-- Given a claim is submitted by a direct report, when it reaches the manager's queue, then the manager receives a push notification within 60 seconds.
-- Given the manager opens the approval screen, when viewing a claim, then they see: employee name, trip purpose, total amount, policy violation flags, receipt thumbnails, and budget impact.
-- Given the manager approves, when they tap 'Approve', then the claim moves to the next workflow step within 10 seconds.
-- Given the manager is on leave, when a claim enters their queue, then the system auto-escalates to the configured delegate after the SLA window.
-
-### US-003 — Finance Reviewer: Processing
-
-> *As a Finance Reviewer, I want automated policy checks and duplicate detection so I only spend time on exceptions, reducing my T&E processing time by at least 40%.*
-
-**Acceptance Criteria:**
-
-- Given a claim passes all automated policy checks, when it reaches Finance Review, then it is automatically queued for reimbursement processing without requiring manual reviewer action (straight-through processing).
-- Given a duplicate claim is detected, when the employee attempts submission, then the system blocks submission and displays the original claim reference.
-- Given a claim has policy flags, when it reaches the Finance queue, then the reviewer sees a summarised exception reason and can approve with override or reject with a comment.
-
-### US-004 — Finance Controller: Reporting
-
-> *As a Finance Controller, I want a real-time dashboard showing T&E spend vs budget by department and category, so I can take corrective action before the period ends rather than after.*
-
-**Acceptance Criteria:**
-
-- Given the Finance Controller logs in, when they navigate to the dashboard, then data reflects transactions processed within the last 15 minutes.
-- Given a cost centre reaches 90% of its T&E budget, when this threshold is crossed, then an alert is sent to the Finance Controller and the relevant Department Head automatically.
-- Given the controller selects a time period and department, when they export the Expense Analysis Report, then the file is available for download within 30 seconds.
+**Request — Create Trip**
+```json
+{
+  "destination": "Mumbai, India",
+  "startDate": "2025-07-10",
+  "endDate": "2025-07-13",
+  "purpose": "Client meeting — Acme Corp",
+  "estimatedBudget": { "amount": 45000, "currency": "INR" }
+}
+```
+**Response — 201**
+```json
+{
+  "tripId": "trip_abc123",
+  "status": "draft",
+  "policyStatus": "ok",
+  "estimatedBreakdown": {
+    "flight": 18000, "hotel": 20000, "perDiem": 4800, "misc": 2200
+  },
+  "createdAt": "2025-06-09T10:00:00Z"
+}
+```
 
 ---
 
-## 9. Release Plan & Feature Phasing
+### 4.3 Expense Reports
 
-### 9.1 Phased Delivery Roadmap
+| Endpoint | Method | Role | Description |
+|---|---|---|---|
+| `/api/v1/reports` | POST | Employee | Create expense report |
+| `/api/v1/reports` | GET | Employee, Manager, Finance | List reports (paginated) |
+| `/api/v1/reports/:reportId` | GET | All roles | Get report detail |
+| `/api/v1/reports/:reportId/submit` | POST | Employee | Submit report for approval |
+| `/api/v1/reports/:reportId/approve` | POST | Manager, Finance | Approve report |
+| `/api/v1/reports/:reportId/reject` | POST | Manager, Finance | Reject with comment |
+| `/api/v1/reports/:reportId/send-back` | POST | Manager, Finance | Return to employee with comments |
 
-| Phase                              | Timeline      | Features Delivered                                                                                                                                                                     | Success Gate                                                                           |
-|------------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
-| Phase 1 — Core                     | Months 1–6    | Travel request & approval; expense claim submission (web); OCR receipt capture; basic policy engine; Finance approval workflow; ERP integration; reimbursement processing; email notifications; standard reports. | 90% of employees onboarded; approval cycle < 24 hrs; 0 P1 incidents in Month 3.       |
-| Phase 2 — Mobile & Automation      | Months 7–12   | Mobile app (iOS + Android); push notifications; straight-through processing; duplicate detection; advance management; mobile approvals; HRMS full sync; management dashboard.          | ≥ 60% mobile submissions; ≥ 80% automation rate; CSAT ≥ 3.8 / 5.0.                   |
-| Phase 3 — Intelligence & Compliance | Months 13–18 | Fraud detection rules; GST ITC reporting; carbon emission tracking; preferred vendor utilisation; budget alerts; audit-ready compliance reports; policy self-service admin console; BI analytics layer. | Policy violation rate < 3%; out-of-policy spend < 2%; ROI tracking active.           |
-| Phase 4 — Strategic Expansion      | Year 2+       | Multi-language support (Hindi + regional); travel booking engine integration; corporate card integration; international travel & multi-currency enhancements; sustainability dashboard.  | ROI ≥ 200% confirmed; CSAT ≥ 4.2 / 5.0.                                              |
-
-### 9.2 Go-Live Readiness Criteria (Phase 1)
-
-- All critical (P0) and high (P1) functional requirements implemented and tested.
-- Performance load test passed at 5,000 concurrent users with < 2s page load.
-- Security penetration test completed; no Critical or High findings unresolved.
-- ERP and HRMS integrations tested end-to-end with 100% data accuracy in UAT.
-- User acceptance testing (UAT) sign-off obtained from Finance, HR, and IT.
-- 100% of target users trained (web-based module completed).
-- Disaster recovery drill completed successfully.
-- Hypercare support plan activated (dedicated support team for first 30 days post-launch).
+**Request — Create Report**
+```json
+{
+  "tripId": "trip_abc123",
+  "title": "Mumbai Client Visit – Jul 2025"
+}
+```
 
 ---
 
-## 10. KPI Alignment & Success Metrics
+### 4.4 Expense Line Items
 
-| KPI                                      | Target                  | Enabling Feature(s)                                              | Phase |
-|------------------------------------------|-------------------------|------------------------------------------------------------------|-------|
-| Travel request approval cycle time       | < 24 hours              | Digital workflow engine, auto-escalation, push notifications     | 1     |
-| Expense claim submission-to-approval time| < 48 hours              | Straight-through processing, automated policy checks            | 1–2   |
-| Reimbursement turnaround time            | < 5 business days       | Payroll integration, automated reimbursement queue              | 1     |
-| Automation rate of expense processing    | ≥ 80%                  | Policy engine, OCR, duplicate detection, STP rules              | 2     |
-| Policy violation rate                    | < 3%                    | Real-time policy engine, employee guidance messages             | 1–3   |
-| Audit trail completeness                 | 100%                    | Immutable audit log service, all-actions logging                | 1     |
-| Receipt attachment compliance rate       | ≥ 98%                  | Mobile OCR capture, mandatory receipt validation                | 2     |
-| System adoption rate                     | ≥ 90% in 6 months      | Mobile app, UX simplicity, training programme                   | 1–2   |
-| Employee CSAT                            | ≥ 4.0 / 5.0            | Fast reimbursement, mobile-first UX, transparency               | 2     |
-| ERP integration error rate               | < 0.1%                  | Resilient integration service, reconciliation checks            | 1     |
-| System uptime                            | ≥ 99.5%                | Cloud-native HA architecture, auto-failover                     | 1     |
-| Cost per expense report processed        | Reduce by 60%           | STP, OCR automation, reduced Finance manual effort              | 2     |
-| ROI                                      | ≥ 200% in 24 months    | All automation features combined                                | 4     |
-| Carbon emission tracking coverage        | 100%                    | Carbon emission API integration                                 | 3     |
+| Endpoint | Method | Role | Description |
+|---|---|---|---|
+| `/api/v1/reports/:reportId/items` | POST | Employee | Add line item |
+| `/api/v1/reports/:reportId/items` | GET | All roles | List line items |
+| `/api/v1/reports/:reportId/items/:itemId` | PATCH | Employee | Update line item |
+| `/api/v1/reports/:reportId/items/:itemId` | DELETE | Employee | Remove line item |
+| `/api/v1/receipts/upload` | POST | Employee | Upload receipt → returns `receiptUrl` |
 
----
-
-## 11. Risks & Mitigations
-
-| Risk                                                                                    | Probability | Impact   | Mitigation                                                                                                                                               |
-|-----------------------------------------------------------------------------------------|-------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Low employee adoption — employees continue using email/WhatsApp for travel approvals.   | High        | High     | Mandatory system-only processing with email approval-link fallback only. Change management programme with manager champions. Executive mandate from CHRO. |
-| ERP integration delays due to legacy system constraints.                                | Medium      | High     | Initiate ERP API discovery in Sprint 1. Build CSV-based fallback import for Phase 1 if API is unavailable. Allocate dedicated integration engineer.      |
-| OCR accuracy below 95% for handwritten or vernacular receipts.                          | Medium      | Medium   | Manual fallback form always available. OCR is a suggestion, not mandatory. Improve OCR model with feedback loop from corrections.                         |
-| Data migration errors from legacy Excel/email archives.                                 | Low         | Medium   | No historical data migration in scope for Phase 1. Open balance advances will be manually entered by Finance team before go-live.                         |
-| Policy configuration errors leading to incorrect auto-approvals.                        | Medium      | High     | Dual-control policy publish workflow (Finance + Compliance sign-off required). UAT policy test cases mandatory before go-live.                            |
-| Security breach of employee financial/personal data.                                    | Low         | Critical | Mandatory penetration test before go-live. AES-256 encryption, MFA for admin roles, access logging, DPDPA compliance review.                            |
-| Scope creep extending Phase 1 beyond 6 months.                                          | High        | Medium   | Strict Phase 1 scope lock after PRD sign-off. Change requests require PMO, Finance, and IT sign-off with impact assessment.                              |
-| Vendor / implementation partner delivery failure.                                       | Medium      | High     | Fixed-price milestones with defined exit criteria. Source code escrow. Parallel internal capability development for key modules.                          |
+**Request — Add Line Item**
+```json
+{
+  "category": "MEALS",
+  "amount": 1200,
+  "currency": "INR",
+  "date": "2025-07-10",
+  "merchant": "The Bombay Canteen",
+  "receiptUrl": "https://storage.etems.io/receipts/rec_xyz.jpg",
+  "justification": null
+}
+```
+**Response — 201**
+```json
+{
+  "itemId": "item_def456",
+  "policyStatus": "flagged",
+  "flagReason": "EXCEEDS_DAILY_MEAL_LIMIT",
+  "convertedAmount": { "amount": 1200, "baseCurrency": "INR" }
+}
+```
 
 ---
 
-## 12. Assumptions & Dependencies
+### 4.5 Approval Actions
 
-### 12.1 Assumptions
-
-- The organisation's HRMS has a REST API or regular data export capability that can provide employee master, reporting hierarchy, and cost centre data.
-- The ERP system can receive journal entries and approved expense data via a documented API or SFTP file interface.
-- The payroll system supports out-of-cycle payment instructions for reimbursements.
-- The organisation's identity provider supports SAML 2.0 or OAuth 2.0 for SSO integration.
-- A time-and-motion study will be conducted before go-live to establish baseline metrics for ROI measurement.
-- Finance and HR will assign dedicated super-users for UAT and the hypercare period.
-- Travel and expense policies will be formally documented and approved by Finance and Compliance before Phase 1 go-live.
-- Mobile devices for the majority of employees are personal BYOD (iOS or Android 10+).
-
-### 12.2 Dependencies
-
-| Dependency                                        | Owner                     | Required by | Risk if Late                                              |
-|---------------------------------------------------|---------------------------|-------------|-----------------------------------------------------------|
-| HRMS API documentation and access credentials     | IT / HRMS Vendor          | Sprint 3    | Manual employee data entry; delayed role assignments      |
-| ERP integration API specification                 | Finance / ERP Vendor      | Sprint 3    | Manual ERP reconciliation in Phase 1                      |
-| Payroll system integration specification          | Finance / Payroll Vendor  | Sprint 6    | Manual payment processing; delayed reimbursements         |
-| Formal T&E policy documentation                   | Finance + Compliance      | Sprint 2    | Cannot configure policy engine; UAT blocked               |
-| Identity provider SSO configuration               | IT Security               | Sprint 4    | Separate login system; MFA not enforced                   |
-| Cloud infrastructure provisioning                 | IT / Cloud Provider       | Sprint 1    | Development and testing environment delays                |
-| Legal review of DPDPA compliance posture          | Legal / Compliance        | Sprint 5    | Data privacy risk; potential regulatory exposure          |
-| UAT participation from Finance, HR, Managers      | HR + Finance + IT         | Month 5     | Go-live delayed; quality risk                             |
+| Endpoint | Method | Role | Description |
+|---|---|---|---|
+| `/api/v1/approvals/queue` | GET | Manager, Finance | Pending approvals for current user |
+| `/api/v1/approvals/delegate` | POST | Manager | Set approval delegation |
+| `/api/v1/approvals/delegate` | DELETE | Manager | Remove delegation |
 
 ---
 
-## 13. Glossary
+### 4.6 Analytics
 
-| Term    | Definition                                                                                                  |
-|---------|-------------------------------------------------------------------------------------------------------------|
-| ETEMS   | Enterprise Employee Travel & Expense Management System — the system described in this PRD.                  |
-| STP     | Straight-Through Processing — a claim processed end-to-end without any manual human intervention.          |
-| OCR     | Optical Character Recognition — automated extraction of text data from scanned receipt images.             |
-| ERP     | Enterprise Resource Planning — the organisation's financial ledger and accounting system.                   |
-| HRMS    | Human Resource Management System — the system of record for employee master data.                          |
-| Cost Centre | An organisational unit assigned a budget and used to categorise expenditure for reporting purposes.    |
-| Per Diem | A fixed daily allowance for meals and incidental expenses while travelling on business.                    |
-| ITC     | Input Tax Credit — the mechanism under GST allowing businesses to claim credit for tax paid on purchases.   |
-| RBAC    | Role-Based Access Control — access permissions determined by the user's assigned system role.              |
-| P1 Incident | A Priority 1 (Critical) incident causing complete system unavailability or data integrity failure affecting all users. |
-| SLA     | Service Level Agreement — a defined and measurable commitment on service quality.                          |
-| MFA     | Multi-Factor Authentication — requiring two or more verification factors to log in to the system.          |
-| DPDPA   | Digital Personal Data Protection Act 2023 — India's primary data privacy legislation.                      |
-| UAT     | User Acceptance Testing — testing conducted by business users to confirm the system meets requirements.    |
-| BYOD    | Bring Your Own Device — employees using personal smartphones to access the mobile application.             |
+| Endpoint | Method | Role | Description |
+|---|---|---|---|
+| `/api/v1/analytics/spend-summary` | GET | Finance | MTD/QTD/YTD spend by department and category |
+| `/api/v1/analytics/violations` | GET | Finance | Policy violation rate and top categories |
+| `/api/v1/analytics/reports/export` | POST | Finance | Trigger CSV or PDF report export |
 
 ---
 
-## 14. Appendices
+### 4.7 Standard Response Conventions
 
-### Appendix A — Reference Documents
+**Success envelope**
+```json
+{
+  "data": {},
+  "meta": { "requestId": "req_abc", "timestamp": "2025-06-09T10:00:00Z" }
+}
+```
 
-- ETEMS KPI Framework v1.0 — `KPI_Enterprise_Travel_Expense_Management.md`
-- Organisation Travel Policy (to be provided by Finance & Compliance)
-- HRMS API Documentation (to be provided by IT)
-- ERP Integration Specification (to be provided by Finance / Vendor)
-- DPDPA Compliance Checklist (to be prepared by Legal)
+**Paginated list**
+```json
+{
+  "data": [],
+  "pagination": { "nextCursor": "string", "hasMore": true, "total": 342 },
+  "meta": { "requestId": "req_abc", "timestamp": "2025-06-09T10:00:00Z" }
+}
+```
 
-### Appendix B — Out-of-Scope Items (Phase 1)
+**Error envelope**
+```json
+{
+  "error": {
+    "code": "POLICY_VIOLATION",
+    "message": "Meal expense exceeds daily limit of ₹800",
+    "details": [{ "field": "amount", "message": "Exceeds limit by ₹400" }],
+    "requestId": "req_abc",
+    "timestamp": "2025-06-09T10:00:00Z"
+  }
+}
+```
 
-- Online travel booking engine (flights, hotels, cab booking) integrated within the platform.
-- Corporate credit card issuance and automated reconciliation.
-- International tax compliance beyond India GST.
-- Customer expense billing or project cost chargeback workflows.
-- HR performance management or incentive integration.
-- Historical data migration from legacy Excel/email archives.
+**HTTP status code conventions**
 
-### Appendix C — Change Request Process
-
-Any change to scope, requirements, or timelines after PRD sign-off must follow this process:
-
-1. Requestor submits a Change Request Form to the PMO describing the change, business justification, and urgency.
-2. PMO conducts an impact assessment (scope, timeline, cost, risk) within 5 business days.
-3. Change Request is presented to the Steering Committee for approval (Finance + IT + HR sign-off required).
-4. Approved changes are incorporated into the backlog with re-prioritisation by the Product Manager.
-5. Rejected changes are logged with rationale and may be reconsidered in future phases.
+| Code | When |
+|---|---|
+| 200 | Successful GET / PATCH |
+| 201 | Successful POST (resource created) |
+| 400 | Validation error |
+| 401 | Missing or expired token |
+| 403 | Authenticated but insufficient role |
+| 404 | Resource not found |
+| 409 | Conflict (e.g., report already submitted) |
+| 422 | Business rule violation (e.g., policy hard-block) |
+| 500 | Unexpected server error |
 
 ---
 
-*ETEMS PRD v1.0 | Confidential — Internal Use Only | ETEMS-2025*
+## 5. Edge Cases
+
+### 5.1 Trip Request
+| # | Scenario | System Behaviour |
+|---|---|---|
+| T-01 | Employee submits trip with dates in the past | Block with validation error: `INVALID_TRIP_DATES` |
+| T-02 | Trip destination matches a policy-blocked region | Soft-block with warning; employee must add justification to proceed |
+| T-03 | Approver is the same person as the employee (self-approval) | System auto-escalates to approver's manager |
+| T-04 | Trip approved but employee never submits an expense report | Report shell expires after 90 days; Finance Admin notified |
+| T-05 | Estimated budget exceeds policy max for the employee's grade | Warning shown inline; approval chain adds Finance review step |
+
+### 5.2 Expense Submission
+| # | Scenario | System Behaviour |
+|---|---|---|
+| E-01 | Receipt image is unreadable / OCR fails | OCR fields left blank; employee fills manually; no block on submission |
+| E-02 | Same receipt uploaded to two different line items | System detects duplicate hash; warns employee before save |
+| E-03 | Employee submits a report with all items flagged | Allowed; entire report routes through Finance with a flag banner |
+| E-04 | Currency conversion API is unavailable at submission time | Last successful rate (≤ 24h old) used; line item tagged `RATE_ESTIMATED`; Finance notified |
+| E-05 | Employee edits a line item after report is submitted | Blocked; employee must request send-back from approver first |
+| E-06 | Report submitted with zero line items | Blocked with validation error: `EMPTY_REPORT` |
+
+### 5.3 Approval Workflow
+| # | Scenario | System Behaviour |
+|---|---|---|
+| A-01 | Approver is on leave with no delegation set | System escalates to approver's manager after 48h SLA |
+| A-02 | Delegate tries to approve a report belonging to the delegator's own team | Allowed; audit log records both delegator and delegate identities |
+| A-03 | Approver rejects a report that has already been paid (race condition) | Rejection blocked; report state is immutable once marked Paid |
+| A-04 | Multi-level approval: level-2 approver approves before level-1 acts | Not possible; approval chain is strictly sequential; level-2 notified only after level-1 approves |
+| A-05 | Finance Admin overrides an approval mid-chain | Override recorded in audit log with mandatory note; remaining approval steps skipped |
+
+### 5.4 Policy Engine
+| # | Scenario | System Behaviour |
+|---|---|---|
+| P-01 | Policy is updated while a report is under review | Report continues under the policy version active at submission time |
+| P-02 | Employee's grade changes after trip is approved but before expense submission | Expense submission validated against the new grade's policy |
+| P-03 | Two policies match the same employee (grade + department overlap) | Most restrictive rule wins; Finance Admin is alerted about the conflict |
+| P-04 | Policy hard-block is triggered at approval stage | Report returned to employee automatically with the specific rule cited |
+
+### 5.5 Reimbursement & Integrations
+| # | Scenario | System Behaviour |
+|---|---|---|
+| R-01 | ERP export fails mid-batch | Failed records logged; Finance notified; successful records committed; retry available |
+| R-02 | Corporate card import contains a transaction already matched | Duplicate flagged; existing match preserved; Finance must manually resolve |
+| R-03 | Employee's bank account details are missing at time of reimbursement | Report held in "Processing" state; HR Admin notified to collect bank details |
+| R-04 | HRMS sync removes an employee who has a pending expense report | Report preserved; employee marked inactive; Finance Admin notified to process |
+| R-05 | Report approved but ERP GL code for the category is unmapped | Export blocked for that report; Finance Admin notified to complete GL mapping |
+
+---
+
+## 6. KPIs (Success Metrics & Acceptance Criteria)
+
+> Detailed KPI framework with leading indicators, guardrails, and phase targets is maintained in `kpi-etems.md`.
+
+### 6.1 Product Success Metrics
+
+| Metric | Target | Phase |
+|---|---|---|
+| Employee adoption (MAU ÷ eligible users) | ≥ 90% | Phase 2 |
+| Expense report cycle time (submit → paid, median) | < 5 business days | Phase 1 |
+| Approver SLA compliance (actioned within 48h) | ≥ 85% | Phase 1 |
+| Policy violation rate (flagged items ÷ total items) | ≤ 10% | Phase 2 |
+| Finance reconciliation time reduction vs. baseline | ≥ 50% | Phase 2 |
+| App Store / Play Store rating | ≥ 4.5 | Phase 2 |
+
+### 6.2 Acceptance Criteria by Module
+
+**Trip Request**
+- AC-TR-01: A submitted trip request triggers approver notification within 30 seconds.
+- AC-TR-02: Policy validation runs synchronously and returns a result before the employee can submit.
+- AC-TR-03: Approved trip auto-creates an expense report shell with trip metadata pre-filled.
+
+**Expense Submission**
+- AC-EX-01: OCR auto-fill populates amount, date, and merchant with ≥ 85% accuracy on clear receipts.
+- AC-EX-02: Currency conversion applies within 500ms of amount entry using the latest available rate.
+- AC-EX-03: A flagged line item shows the violated policy rule name and the allowed limit inline.
+
+**Approval Workflow**
+- AC-AP-01: Auto-escalation triggers at exactly 48 hours with no manual intervention required.
+- AC-AP-02: Delegation activates and deactivates at the configured start/end dates without manual toggling.
+- AC-AP-03: Every approval action (approve/reject/send-back/override) appears in the audit log within 5 seconds.
+
+**Reimbursement**
+- AC-RM-01: Reimbursement batch export generates a valid, ERP-importable file for all approved reports in the selected date range.
+- AC-RM-02: Employee receives a reimbursement notification within 60 seconds of Finance marking the report Paid.
+
+**System**
+- AC-SY-01: All API endpoints meet p99 < 300ms under normal load.
+- AC-SY-02: The system remains available at ≥ 99.9% uptime per calendar month.
+- AC-SY-03: No sensitive field (password, token, bank details) is returned in any API response or written to application logs.
+
+---
+
+## 7. Limitations
+
+### 7.1 Phase 1 Limitations (MVP — Month 1–3)
+- Approval chain is fixed at 2 levels (Manager → Finance); dynamic multi-level chains are Phase 2.
+- Policy engine supports only category-level limits; per-grade and per-destination rules are Phase 2.
+- No OCR on mobile; employees fill receipt details manually in Phase 1.
+- HRMS integration is CSV import only; real-time API sync is Phase 2.
+- Analytics dashboard is not available; Finance uses raw CSV exports in Phase 1.
+
+### 7.2 Functional Limitations (All Phases)
+- ETEMS does not process payroll or initiate bank transfers; it produces reimbursement files consumed by external ERP/payroll systems.
+- Cash advance requests are not supported in v1.
+- Direct flight or hotel booking is not available; ETEMS imports booking data from TMC but does not book travel.
+- Mobile offline mode supports receipt capture and draft saving only; approval actions require connectivity.
+- Multi-language UI is not supported in v1; English only.
+
+### 7.3 Technical Constraints
+- Corporate card reconciliation requires the bank or card provider to support CSV export or a compatible API feed; direct bank integrations vary by provider and may require additional setup time.
+- ERP integration file format (CSV/XLSX) is compatible with SAP and Oracle by default; custom ERP formats require a configuration engagement.
+- OCR accuracy is dependent on receipt image quality; handwritten or heavily damaged receipts require manual entry.
+- Currency conversion rates are sourced from a third-party exchange rate API; a maximum 24-hour stale rate is used as a fallback during outages (line items tagged `RATE_ESTIMATED`).
+
+### 7.4 Compliance Scope
+- GDPR compliance covers EU employee data only in v1; additional regional compliance frameworks (CCPA, PDPA) are post-launch.
+- Audit log retention is 7 years per policy; actual purge jobs are the responsibility of the Super Admin per their organization's data retention policy.
