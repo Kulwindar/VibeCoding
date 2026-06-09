@@ -1,7 +1,7 @@
 # Project Boundary Document
 ## Enterprise Employee Travel & Expense Management System (ETEMS)
 
-**Version:** 1.0
+**Version:** 2.0
 **Status:** Active
 **Date:** 2025-06-09
 **Project Lead:** Product Management
@@ -34,7 +34,99 @@ Enable enterprises to eliminate fragmented T&E processes (email, spreadsheets, p
 
 ---
 
-## 2. Project Scope at a Glance
+## 2. AI Collaboration Rules
+
+These rules govern how AI tools (Claude, Cursor, Copilot, etc.) are used within this project. Every team member working with AI assistance **must** follow these rules without exception. They exist to protect code quality, prevent wasted effort, and keep humans in control of every decision that affects the codebase.
+
+---
+
+### Rule 1 — Never Commit Code Autonomously
+
+> **AI must not commit, push, or merge code to any branch under any circumstance.**
+
+- All commits are made by a named team member after reviewing the AI-generated output.
+- AI may suggest commit messages, but a human types and executes the actual `git commit`.
+- Pull request creation, branch management, and merges remain exclusively human actions.
+- This applies to all environments: development, staging, and production.
+
+---
+
+### Rule 2 — No Commands Without Explicit Approval
+
+> **AI must not run terminal commands, scripts, or shell operations without first asking and receiving explicit approval.**
+
+- Before any command is executed (install, build, migrate, deploy, curl, etc.), AI must state what it intends to run and why, and wait for a human to confirm.
+- If a task requires multiple commands in sequence, each step must be approved or a full plan must be reviewed and approved upfront.
+- AI may **suggest** commands in a code block for the human to copy and run — but must not execute them autonomously.
+- This covers: `npm`, `pip`, `docker`, `kubectl`, `terraform`, database migrations, file deletions, and any destructive operations.
+
+**Pattern to follow:**
+```
+AI: "I'd need to run the following to proceed — shall I?"
+    npm install axios
+Human: [reviews and runs it themselves, or confirms AI may proceed]
+```
+
+---
+
+### Rule 3 — Clarify Before Writing Code
+
+> **AI must not write code without a full understanding of what is being built. When in doubt, ask first.**
+
+- If a request is ambiguous, incomplete, or could be interpreted multiple ways, AI must ask clarifying questions before producing any code.
+- AI must reference the relevant sections of `prd.md`, `kpi.md`, or `project_scope.md` to validate its understanding before coding.
+- For any new module, endpoint, or component: AI must state its intended approach and get confirmation before writing implementation code.
+- This rule exists to avoid building the wrong thing — rework wastes tokens, time, and context window.
+
+**Questions AI should always resolve before coding:**
+- Which phase does this belong to? (Phase 1 / 2 / 3)
+- Which role(s) does this affect? (see `/Personas/`)
+- Is this in scope for the current sprint/milestone?
+- Are there existing patterns in the codebase this should follow?
+- What is the expected input/output/state change?
+
+---
+
+### Rule 4 — Write Only Maintainable, Modular Code
+
+> **AI must produce code that is modular, readable, and easy to maintain. No monoliths, no shortcuts that create long-term debt.**
+
+All AI-generated code must follow these standards:
+
+| Standard | Requirement |
+|---|---|
+| **Single Responsibility** | Each function/class/module does one thing well |
+| **Naming** | Descriptive names — no abbreviations, no single-letter variables outside loops |
+| **File Size** | No file exceeds ~300 lines; split if larger |
+| **No Duplication** | Extract shared logic into utilities or services; do not copy-paste |
+| **Folder Structure** | Place files in the correct location per Section 6 of this document |
+| **Type Safety** | Full TypeScript types — no `any` unless explicitly justified |
+| **Error Handling** | All async operations wrapped with proper error handling; no silent failures |
+| **Comments** | Comment the *why*, not the *what*; complex logic must be explained |
+| **Testability** | Code must be unit-testable without mocking the entire application |
+
+AI must flag any situation where following these standards conflicts with a requested shortcut, and propose a maintainable alternative instead.
+
+---
+
+### Summary: AI Collaboration at a Glance
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ AI Collaboration Rules — Quick Reference                    │
+├─────────────────────────────────────────────────────────────┤
+│  ❌ Never commit, push, or merge code                       │
+│  ❌ Never run commands without explicit human approval      │
+│  ❌ Never write code without understanding the full scope   │
+│  ✅ Always ask clarifying questions when in doubt          │
+│  ✅ Always produce modular, typed, testable code           │
+│  ✅ Always reference prd.md / kpi.md before building       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 3. Project Scope at a Glance
 
 ### 2.1 In Scope (Phase 1 MVP)
 
@@ -81,7 +173,7 @@ Enable enterprises to eliminate fragmented T&E processes (email, spreadsheets, p
 
 ---
 
-## 3. Key Metrics & Success Criteria
+## 4. Key Metrics & Success Criteria
 
 ### 3.1 North Star & Primary KPIs
 
@@ -107,7 +199,7 @@ Enable enterprises to eliminate fragmented T&E processes (email, spreadsheets, p
 
 ---
 
-## 4. Project Directory Structure
+## 5. Project Directory Structure
 
 ```
 VibeCoding/
@@ -433,7 +525,7 @@ VibeCoding/
 
 ---
 
-## 5. Technology Stack (Recommended)
+## 6. Technology Stack (Recommended)
 
 ### 5.1 Backend
 | Layer | Technology | Rationale |
@@ -486,7 +578,7 @@ VibeCoding/
 
 ---
 
-## 6. Timeline & Milestones
+## 7. Timeline & Milestones
 
 ### 6.1 Phase 1 — MVP (Months 1–3)
 
@@ -528,7 +620,7 @@ VibeCoding/
 
 ---
 
-## 7. Team Structure
+## 8. Team Structure
 
 ### 7.1 Core Team (Phase 1)
 
@@ -555,7 +647,7 @@ VibeCoding/
 
 ---
 
-## 8. Key Dependencies & Constraints
+## 9. Key Dependencies & Constraints
 
 ### 8.1 External Dependencies
 | Dependency | Impact | Mitigation |
@@ -577,7 +669,7 @@ VibeCoding/
 
 ---
 
-## 9. Success Criteria & Go/No-Go Gates
+## 10. Success Criteria & Go/No-Go Gates
 
 ### 9.1 Phase 1 Go-Live Gates
 
@@ -601,7 +693,7 @@ All gates **must** pass before production release:
 
 ---
 
-## 10. Risks & Mitigation
+## 11. Risks & Mitigation
 
 ### 10.1 High-Impact Risks
 
@@ -615,7 +707,7 @@ All gates **must** pass before production release:
 
 ---
 
-## 11. Artifact Inventory
+## 12. Artifact Inventory
 
 ### 11.1 Strategic Documents
 - ✅ `prd.md` — Product Requirements Document (v2.0)
@@ -636,7 +728,7 @@ All gates **must** pass before production release:
 
 ---
 
-## 12. Folder Navigation Guide
+## 13. Folder Navigation Guide
 
 | Folder | Purpose | Navigate For... |
 |---|---|---|
@@ -655,7 +747,7 @@ All gates **must** pass before production release:
 
 ---
 
-## 13. Quick Start
+## 14. Quick Start
 
 ### 13.1 For New Team Members
 1. Read: `README.md` → `project_boundary.md` (this file) → `project_scope.md`
@@ -678,15 +770,15 @@ All gates **must** pass before production release:
 ### 13.4 For Project Managers
 1. Track milestone progress against `/Tasks/Phase_1_Deliverables.md`
 2. Monitor KPIs in `/PRD_&_KPI/kpi.md` (Section 5: Activation by Phase)
-3. Review risk mitigation in Section 10 above
+3. Review risk mitigation in Section 12 above
 
 ---
 
-## 14. Document Versioning
+## 15. Document Versioning
 
 | Document | Current Version | Last Updated | Next Review |
 |---|---|---|---|
-| project_boundary.md | 1.0 | 2025-06-09 | Month 1 (post-kickoff) |
+| project_boundary.md | 2.0 | 2025-06-09 | Month 1 (post-kickoff) |
 | project_scope.md | 1.0 | 2025-06-09 | Month 1 (post-kickoff) |
 | prd.md | 2.0 | 2025-06-09 | Month 2 (Phase 2 planning) |
 | kpi.md | 2.0 | 2025-06-09 | Month 1 (baseline setup) |
@@ -695,7 +787,7 @@ All gates **must** pass before production release:
 
 ---
 
-## 15. Summary: Project Boundary at a Glance
+## 16. Summary: Project Boundary at a Glance
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -733,6 +825,6 @@ All gates **must** pass before production release:
 | Edge cases & validation | `PRD_&_KPI/prd.md` (Section 5) |
 | Phase 1 scope & acceptance | `project_scope.md` (Section 7) |
 | Technical requirements (NFR) | `project_scope.md` (Section 5) |
-| Go/No-Go gates | Section 9.1 above + `project_scope.md` (Section 9) |
-| Team roles & responsibilities | Section 7 above |
-| Risk register | Section 10 above |
+| Go/No-Go gates | Section 11.1 above + `project_scope.md` (Section 9) |
+| Team roles & responsibilities | Section 9 above |
+| Risk register | Section 12 above |
