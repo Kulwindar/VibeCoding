@@ -2,13 +2,13 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import swagger from '@fastify/swagger';
-import { config } from './config/env.js';
-import { connectDatabase } from './config/database.js';
-import { initializeRedis } from './config/redis.js';
-import { errorHandler } from './middleware/errorHandler.js';
-import { authenticate } from './middleware/authenticate.js';
-import { logger } from './lib/logger.js';
-import { registerUserRoutes } from './modules/users/index.js';
+import { config } from './config/env.ts';
+import { connectDatabase } from './config/database.ts';
+import { initializeRedis } from './config/redis.ts';
+import { errorHandler } from './middleware/errorHandler.ts';
+import { authenticate } from './middleware/authenticate.ts';
+import { logger } from './lib/logger.ts';
+import { registerUserRoutes } from './modules/users/index.ts';
 
 const app = Fastify({
   logger: logger,
